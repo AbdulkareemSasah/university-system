@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
+            $table->json("name");
+            $table->json("slug");
+            $table->json("description");
+            $table->json("image");
+            $table->json("properties");
+            $table->json("content");
+            $table->boolean("visible");
             $table->timestamps();
         });
     }

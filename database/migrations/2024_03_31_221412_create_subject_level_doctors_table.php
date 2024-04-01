@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('subject_level_doctors', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(\App\Models\Level::class)->index();
+            $table->foreignIdFor(\App\Models\Subject::class)->index();
+            $table->foreignIdFor(\App\Models\User::class)->index();
+            $table->json("properties");
             $table->timestamps();
         });
     }

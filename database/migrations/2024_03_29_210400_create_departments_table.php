@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sections', function (Blueprint $table) {
+        Schema::create('departments', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Collage::class)->index();
             $table->json("name");
@@ -20,6 +20,7 @@ return new class extends Migration
             $table->json("image");
             $table->json("content");
             $table->boolean("visible");
+            $table->json("properties");
             $table->timestamps();
         });
     }

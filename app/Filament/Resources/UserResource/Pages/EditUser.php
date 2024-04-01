@@ -9,7 +9,10 @@ use Filament\Resources\Pages\EditRecord;
 class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
-
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
     protected function getHeaderActions(): array
     {
         return [

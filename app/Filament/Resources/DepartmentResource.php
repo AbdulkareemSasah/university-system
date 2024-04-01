@@ -10,43 +10,100 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\Concerns\Translatable;
 
 class DepartmentResource extends Resource
 {
+    use Translatable;
     protected static ?string $model = Department::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-server-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('collage_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Textarea::make('name')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('slug')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('image')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('content')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('visible')
-                    ->required(),
-                Forms\Components\Textarea::make('properties')
-                    ->required()
-                    ->columnSpanFull(),
-            ]);
+                Tabs::make('Tabs')->tabs([
+                    Tabs\Tab::make(__('Information'))->schema([
+                        Section::make(__("Create Class Room"))->schema([
+                            Select::make("collage")->label(__("Collage"))->relationship('collage', 'name'),
+                            TextInput::make("name")->label(__("name")),
+                            TextInput::make("slug")->label(__("slug")),
+                            Textarea::make("description")->label(__("description")),
+                            Checkbox::make("visible")->label(__("visible")),
+
+                        ]),
+                        Section::make("")->schema([
+                            KeyValue::make(__("properties")),
+                            FileUpload::make(__("image")),
+                        ])
+                    ])->columns(2),
+                    Tabs\Tab::make(__('Content'))->schema([
+                        Section::make(__("Write This Content If you want make page for this"))->schema([
+                            Builder::make(__('content'))
+                                ->blocks([
+                                    Builder\Block::make('heading')
+                                        ->schema([
+                                            TextInput::make('content')
+                                                ->label('Heading')
+                                                ->required(),
+                                            Select::make('level')
+                                                ->options([
+                                                    'h1' => 'Heading 1',
+                                                    'h2' => 'Heading 2',
+                                                    'h3' => 'Heading 3',
+                                                    'h4' => 'Heading 4',
+                                                    'h5' => 'Heading 5',
+                                                    'h6' => 'Heading 6',
+                                                ])
+                                                ->required(),
+                                        ])
+                                        ->columns(2),
+                                    Builder\Block::make('paragraph')
+                                        ->schema([
+                                            Textarea::make('content')
+                                                ->label('Paragraph')
+                                                ->required(),
+                                        ]),
+                                    Builder\Block::make('image')
+                                        ->schema([
+                                            FileUpload::make('url')
+                                                ->label('Image')
+                                                ->image()
+                                                ->required(),
+                                            TextInput::make('alt')
+                                                ->label('Alt text')
+                                                ->required(),
+                                        ]),
+                                    Builder\Block::make('richfield')
+                                        ->schema([
+                                            RichEditor::make('content')
+                                                ->required(),
+                                        ]),
+                                    Builder\Block::make('markdown')
+                                        ->schema([
+                                            MarkdownEditor::make('content')
+                                                ->required(),
+                                        ]),
+                                ])
+                                ->columnSpanFull(),
+                        ])
+                    ]),
+                ])
+
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table

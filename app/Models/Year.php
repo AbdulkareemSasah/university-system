@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Year extends Model
 {
     use HasFactory;
+    protected $fillable = ["name"];
+    public function terms()
+    {
+        return $this->hasMany(Term::class);
+    }
 }

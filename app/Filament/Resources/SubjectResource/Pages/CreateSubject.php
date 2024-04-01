@@ -8,5 +8,12 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateSubject extends CreateRecord
 {
+    use CreateRecord\Concerns\Translatable;
     protected static string $resource = SubjectResource::class;
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\LocaleSwitcher::make(),
+        ];
+    }
 }

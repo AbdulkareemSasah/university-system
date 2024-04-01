@@ -9,12 +9,14 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
+use Filament\Tables\Table as FilamentTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\Concerns\Translatable;
 
 class TableResource extends Resource
 {
+    use Translatable;
     protected static ?string $model = Table::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -35,7 +37,7 @@ class TableResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public static function table(FilamentTable $table): FilamentTable
     {
         return $table
             ->columns([

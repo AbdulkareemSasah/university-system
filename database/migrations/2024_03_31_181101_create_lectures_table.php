@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('lectures', function (Blueprint $table) {
             $table->id();
+            $table->json("properties");
+            $table->json("content");
+            $table->boolean("visible");
+            $table->foreignIdFor(\App\Models\SubjectLevelDoctor::class)->index();
+            $table->foreignIdFor(\App\Models\Table::class)->index();
             $table->timestamps();
         });
     }

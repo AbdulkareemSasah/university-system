@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('generals', function (Blueprint $table) {
             $table->id();
+            $table->json("university_name");
+            $table->json("description");
+            $table->json("navbar");
+            $table->json("footer");
+            $table->string("image");
+            $table->string("logo");
+            $table->string("dark_logo");
+            $table->string("light_logo");
             $table->timestamps();
         });
     }

@@ -9,10 +9,12 @@ use Filament\Resources\Pages\ListRecords;
 class ListSubjects extends ListRecords
 {
     protected static string $resource = SubjectResource::class;
+    use ListRecords\Concerns\Translatable;
 
     protected function getHeaderActions(): array
     {
         return [
+            Actions\LocaleSwitcher::make(),
             Actions\CreateAction::make(),
         ];
     }
