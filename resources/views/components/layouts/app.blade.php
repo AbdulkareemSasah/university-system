@@ -12,7 +12,7 @@
     <link href="https://fonts.bunny.net/css?family=cairo:400,500,600&display=swap" rel="stylesheet" />
 
 
-    @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx", 'resources/css/app.css', 'resources/css/arabic.css'])
+    @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx"])
 </head>
 
 <body class="dark bg-background text-foreground">
