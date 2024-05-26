@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -10,7 +10,7 @@ import {
     NavigationMenuViewport,
     navigationMenuTriggerStyle,
 } from "@/Components/ui/navigation-menu";
-import {Link, router, usePage} from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import { Button } from "./ui/button";
 import { GridIcon } from "@radix-ui/react-icons";
 import {
@@ -24,13 +24,11 @@ import {
 import ModeToggle from "./ModeToggle";
 import Logout from "@/Components/Logout";
 type Props = {
-    is_user:boolean,
-    is_doctor:boolean
+    is_user: boolean;
+    is_doctor: boolean;
 };
 
-export default function Navbar({is_user,is_doctor}: Props) {
-
-
+export default function Navbar({ is_user, is_doctor }: Props) {
     return (
         <nav className="w-full z-50 fixed top-0 bg-gray-200 left-0 flex justify-between items-center h-16 px-3 backdrop-blur-lg">
             <div className="md:hidden">
@@ -60,46 +58,61 @@ export default function Navbar({is_user,is_doctor}: Props) {
             </div>
             <NavigationMenu className="hidden md:block ">
                 <NavigationMenuList className={"flex-row-reverse"}>
-                    <NavigationMenuItem >
+                    <NavigationMenuItem>
                         <Link href="/">
                             <NavigationMenuLink
-                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
+                                className={
+                                    navigationMenuTriggerStyle() +
+                                    " bg-gray-200"
+                                }
                             >
                                 الرئيسية
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
-                        <Link href="/collages">
+                        <Link href="#">
                             <NavigationMenuLink
-                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
+                                className={
+                                    navigationMenuTriggerStyle() +
+                                    " bg-gray-200"
+                                }
                             >
                                 الجداول الدراسية
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
- <NavigationMenuItem>
-                        <Link href="/collages">
+                    <NavigationMenuItem>
+                        <Link href="#">
                             <NavigationMenuLink
-                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
+                                className={
+                                    navigationMenuTriggerStyle() +
+                                    " bg-gray-200"
+                                }
                             >
                                 التخصصات
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
- <NavigationMenuItem>
-                        <Link href="/collages">
+                    <NavigationMenuItem>
+                        <Link href="#">
                             <NavigationMenuLink
-                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
+                                className={
+                                    navigationMenuTriggerStyle() +
+                                    " bg-gray-200"
+                                }
                             >
                                 عن الجامعة
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
- <NavigationMenuItem>
-                        <Link href="/collages">
+                    <NavigationMenuItem>
+                        <Link href="#">
                             <NavigationMenuLink
-                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
+                                className={
+                                    navigationMenuTriggerStyle() +
+                                    " bg-gray-200"
+                                }
                             >
                                 بوابة الطالب
                             </NavigationMenuLink>
@@ -110,18 +123,25 @@ export default function Navbar({is_user,is_doctor}: Props) {
 
             <div className="flex gap-4">
                 <ModeToggle />
-                {is_doctor  ?
+                {is_doctor ? (
                     <>
                         <Logout />
-                        <a href={"/lectures"}><Button>محاضراتي</Button></a>
-                    </> :
-                    is_user ?
-                        <>
-                            <Logout />
-                            <Link href={"/dashboard"}><Button>لوحة التحكم</Button></Link>
-                        </> :
-                        <Link href={"/login"}><Button>تسجيل الدخول</Button></Link>
-                }
+                        <a href={"/lectures"}>
+                            <Button>محاضراتي</Button>
+                        </a>
+                    </>
+                ) : is_user ? (
+                    <>
+                        <Logout />
+                        <Link href={"/dashboard"}>
+                            <Button>لوحة التحكم</Button>
+                        </Link>
+                    </>
+                ) : (
+                    <Link href={"/login"}>
+                        <Button>تسجيل الدخول</Button>
+                    </Link>
+                )}
             </div>
         </nav>
     );
