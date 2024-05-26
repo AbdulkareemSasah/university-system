@@ -12,12 +12,12 @@
     <link href="https://fonts.bunny.net/css?family=cairo:400,500,600&display=swap" rel="stylesheet" />
 
 
-    @vite(['resources/js/app.tsx', "resources/css/app.css"])
+    @vite(['resources/js/app.tsx', "resources/js/Pages/{$page['component']}.tsx", 'resources/css/app.css', 'resources/css/arabic.css'])
 </head>
 
 <body class="dark bg-background text-foreground">
     <livewire:layouts.navigation />
-    <div class="container h-screen my-auto mt-16">{{$slot}}</div>
+    <div class="container h-screen my-auto mt-16">{{ $slot }}</div>
 
 </body>
 
