@@ -31,7 +31,7 @@ services:
             - ./docker-compose/mysql/my.cnf:/etc/mysql/my.cnf
             - ./docker-compose/mysql/init:/docker-entrypoint-initdb.d
         ports:
-            - 3306:${DB_PORT}
+            - 3311:${DB_PORT}
         networks:
             - hcm
 
