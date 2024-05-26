@@ -38,7 +38,7 @@ services:
     nginx:
         image: nginx
         ports:
-            - 80:80
+            - 8009:80
         depends_on:
             - db
             - app
