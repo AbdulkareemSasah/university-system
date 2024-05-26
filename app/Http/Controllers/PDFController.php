@@ -92,7 +92,7 @@ class PDFController extends Controller
 
         // set some language-dependent strings (optional)
         PDF::setLanguageArray($lg);
-        $fontname = \TCPDF_FONTS::addTTFfont('/app/public/fonts/Arial Bold.ttf', 'TrueTypeUnicode', '', 11);
+        $fontname = \TCPDF_FONTS::addTTFfont('./Arial Bold.ttf', 'TrueTypeUnicode', '', 11);
         PDF::SetFont($fontname, '', 12, '', true);
         PDF::AddPage('L', 'mm', 'B4', true, 'UTF-8', false);
         PDF::writeHTML($html,  true, false, true, false, "");
