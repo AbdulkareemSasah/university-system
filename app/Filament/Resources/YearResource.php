@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\YearResource\Pages;
 use App\Filament\Resources\YearResource\RelationManagers;
+use App\Filament\Resources\YearResource\RelationManagers\TermsRelationManager;
 use App\Models\Year;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -20,16 +21,24 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class YearResource extends Resource
 {
     protected static ?string $model = Year::class;
-
+    protected static ?int $navigationSort = 2;
+    public static function getModelLabel(): string
+    {
+        return __("Year");
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('Years');
+    }
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make(__('Create Year'))->schema([
-                    TextInput::make('name')->label(__('Select Year'))
-                        ->integer()->maxValue(2030)->minValue(2024),
+                Section::make()->schema([
+                    TextInput::make('name')->label(__('Year'))
+                        ,
                 ]),
             ]);
     }
@@ -57,7 +66,7 @@ class YearResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            TermsRelationManager::class,
         ];
     }
 

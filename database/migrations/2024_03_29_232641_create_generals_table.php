@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->json("university_name");
             $table->json("description");
-            $table->json("navbar");
-            $table->json("footer");
-            $table->string("image");
-            $table->string("logo");
-            $table->string("dark_logo");
-            $table->string("light_logo");
+            $table->json("schooling_days");
+            $table->json("navbar")->nullable();
+            $table->json("footer")->nullable();
+            $table->json("table")->nullable();
+            $table->string("image")->nullable();
+            $table->string("logo")->nullable();
+            $table->string("dark_logo")->nullable();
+            $table->string("light_logo")->nullable();
             $table->timestamps();
         });
     }

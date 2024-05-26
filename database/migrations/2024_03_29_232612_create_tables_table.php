@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('tables', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Department::class)->index();
+            $table->foreignIdFor(\App\Models\Collage::class)->index();
             $table->foreignIdFor(\App\Models\Year::class)->index();
             $table->foreignIdFor(\App\Models\Term::class)->index();
-            $table->json("data");
-            $table->json("properties");
+            $table->json("data")->nullable();
+            $table->json("properties")->nullable();
+            $table->unique(['collage_id', 'year_id', 'term_id']);
             $table->timestamps();
         });
     }

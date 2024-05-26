@@ -11,7 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('department_lecture', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(\App\Models\Department::class)->index();
+            $table->foreignIdFor(\App\Models\Lecture::class)->index();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('department_lecture');
     }
 };

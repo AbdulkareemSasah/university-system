@@ -21,13 +21,24 @@ class Level extends Model
         "visible",
         "properties"
     ];
+    protected $casts = [
+        'properties' => 'array',
+    ];
+    public function lectures()
+    {
+        return $this->hasMany(Lecture::class);
+    }
     public function subjects()
     {
-        return $this->belongsToMany(Subject::class);
+        return $this->belongsToMany(Subject::class, "lectures");
     }
     public function doctors()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(Doctor::class, "lectures");
+    }
+    public function departments()
+    {
+        return $this->hasMany(LevelDepartment::class);
     }
 
 }

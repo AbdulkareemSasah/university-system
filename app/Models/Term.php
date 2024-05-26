@@ -13,6 +13,7 @@ class Term extends Model
     public $translatable = ["name", "slug", "description", "content"];
     protected $fillable = [
         "name",
+        "year_id",
         "slug",
         "description",
         "image",
@@ -20,8 +21,15 @@ class Term extends Model
         "visible",
         "properties"
     ];
+    protected $casts = [
+        'properties' => 'array',
+    ];
     public function year()
     {
         return $this->belongsTo(Year::class);
+    }
+    public function tables()
+    {
+        return $this->hasMany(Table::class);
     }
 }

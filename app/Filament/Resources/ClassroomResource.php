@@ -22,13 +22,24 @@ use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ClassroomResource extends Resource
 {
     use Translatable;
     protected static ?string $model = Classroom::class;
-
+    protected static ?int $navigationSort = 11;
+    public static function getModelLabel(): string
+    {
+        return __("Classroom");
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('Classrooms');
+    }
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
 
     public static function form(Form $form): Form
@@ -37,25 +48,32 @@ class ClassroomResource extends Resource
             ->schema([
                 Tabs::make('Tabs')->tabs([
                     Tabs\Tab::make(__('Information'))->schema([
-
-                        Section::make(__("Create Class Room"))->schema([
-                            TextInput::make(__("name")),
-                            TextInput::make(__("slug")),
-                            TextInput::make(__("capacity")),
-                            Textarea::make(__("description")),
-                            Checkbox::make(__("visible")),
-
-                        ]),
-                        Section::make("")->schema([
-                            KeyValue::make(__("properties")),
-                            FileUpload::make(__("image")),
-                        ])
-                    ])->columns(2),
+                        Forms\Components\Split::make([
+                            Section::make()->schema([
+                                TextInput::make("name")->label(__("name"))->columnSpanFull(),
+                                TextInput::make("slug")->label(__("slug")),
+                                TextInput::make("capacity")->label(__("capacity"))->numeric(),
+                                Textarea::make("description")->label(__("description"))->columnSpanFull(),
+                            ])->columns(2),
+                            Section::make()->schema([
+                                Checkbox::make("has_projector")->label(__("Has projector")),
+                                Checkbox::make("visible")->label(__("visible")),
+                            ])->grow(false)
+                        ])->from('md'),
+                        Forms\Components\Split::make([
+                            Section::make("")->schema([
+                                FileUpload::make("image")->label(__("image")),
+                            ]),
+                            Section::make("")->schema([
+                                KeyValue::make("properties")->label(__("properties")),
+                            ])
+                        ])->from("md")
+                    ])->columns(1),
                     Tabs\Tab::make(__('Content'))->schema([
                         Section::make(__("Write This Content If you want make page for this"))->schema([
                             Builder::make(__('content'))
                                 ->blocks([
-                                    Builder\Block::make('heading')
+                                    Builder\Block::make('heading')->label(__('heading'))
                                         ->schema([
                                             TextInput::make('content')
                                                 ->label('Heading')
@@ -72,13 +90,13 @@ class ClassroomResource extends Resource
                                                 ->required(),
                                         ])
                                         ->columns(2),
-                                    Builder\Block::make('paragraph')
+                                    Builder\Block::make('paragraph')->label(__('paragraph'))
                                         ->schema([
                                             Textarea::make('content')
                                                 ->label('Paragraph')
                                                 ->required(),
                                         ]),
-                                    Builder\Block::make('image')
+                                    Builder\Block::make('image')->label(__('image'))
                                         ->schema([
                                             FileUpload::make('url')
                                                 ->label('Image')
@@ -88,12 +106,12 @@ class ClassroomResource extends Resource
                                                 ->label('Alt text')
                                                 ->required(),
                                         ]),
-                                    Builder\Block::make('richfield')
+                                    Builder\Block::make('richfield')->label(__('richfield'))
                                         ->schema([
                                             RichEditor::make('content')
                                                 ->required(),
                                         ]),
-                                    Builder\Block::make('markdown')
+                                    Builder\Block::make('markdown')->label(__('markdown'))
                                         ->schema([
                                             MarkdownEditor::make('content')
                                                 ->required(),
@@ -111,7 +129,21 @@ class ClassroomResource extends Resource
     {
         return $table
             ->columns([
-                //
+                ImageColumn::make('image')->label(__("image")),
+                TextColumn::make('name')->searchable()->label(__("name"))->sortable()
+                    ->toggleable(),
+                TextColumn::make('capacity')->searchable()->label(__("capacity"))->sortable()
+                    ->toggleable(),
+                TextColumn::make('description')->searchable()->label(__("description"))->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('visible')->boolean()->label(__("visible"))->sortable()
+                    ->toggleable(),
+                TextColumn::make("slug")->label(__("slug"))->sortable()
+                    ->toggleable(),
+                TextColumn::make("created_at")->label(__("created at"))->sortable()->datetime()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make("updated_at")->label(__("updated at"))->sortable()->datetime()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

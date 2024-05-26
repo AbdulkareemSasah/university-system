@@ -2,8 +2,13 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\DepartmentResource\RelationManagers\LevelsRelationManager;
 use App\Filament\Resources\LevelResource\Pages;
 use App\Filament\Resources\LevelResource\RelationManagers;
+use App\Filament\Resources\LevelResource\RelationManagers\SubjectDoctorRelationManager;
+use App\Filament\Resources\LevelResource\RelationManagers\DoctorsRelationManager;
+use App\Filament\Resources\LevelResource\RelationManagers\SubjectsRelationManager;
+use App\Models\Department;
 use App\Models\Level;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -12,6 +17,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Builder;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\MarkdownEditor;
@@ -23,12 +29,23 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\Concerns\Translatable;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 
 class LevelResource extends Resource
 {
     use Translatable;
     protected static ?string $model = Level::class;
-
+    protected static ?int $navigationSort = 6;
+    public static function getModelLabel(): string
+    {
+        return __("Level");
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('Levels');
+    }
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
     public static function form(Form $form): Form
@@ -37,24 +54,55 @@ class LevelResource extends Resource
             ->schema([
                 Tabs::make('Tabs')->tabs([
                     Tabs\Tab::make(__('Information'))->schema([
-                        Section::make(__("Create New Level"))->schema([
-                            Select::make("department")->label(__("Department"))->relationship('department', 'name'),
-                            TextInput::make("name")->label(__("name")),
-                            TextInput::make("slug")->label(__("slug")),
-                            Textarea::make("description")->label(__("description")),
-                            Checkbox::make("visible")->label(__("visible")),
+                        Forms\Components\Split::make([
+                            Section::make("")->schema([
+                                TextInput::make("name")->label(__("name"))->columnSpanFull(),
+                                Textarea::make("description")->label(__("description"))->columnSpanFull(),
+                                Checkbox::make("visible")->label(__("visible")),
+                                TextInput::make("slug")->label(__("slug")),
 
+                                Repeater::make('departments')->label(__('Departments'))
+                                    ->relationship('departments')
+                                    ->schema([
+                                        Select::make('department_id')
+                                            ->label(__('Department'))
+                                            ->options(function (callable $get) {
+
+                                                $selectedDepartments = collect($get('departments'))
+                                                    ->pluck('department_id')
+                                                    ->toArray();
+
+                                                $query = Department::query();
+
+                                                if ($selectedDepartments) {
+                                                    $query->whereNotIn('id', $selectedDepartments);
+                                                }
+
+                                                return $query->pluck('name', 'id');
+                                            })
+                                            ->required()
+                                            ->reactive()
+                                            ->live(),
+                                        TextInput::make('count_of_student')
+                                            ->label(__('Student count'))
+                                            ->required()
+                                            ->numeric(),
+                                    ])->columnSpanFull()->live()->reactive()
+                                    ->columns(2),
+
+                            ])->columns(2),
+
+                            Section::make("")->schema([
+                                KeyValue::make("properties")->label(__("properties")),
+                                FileUpload::make("image")->label(__("image")),
+                            ])->grow(false)
                         ]),
-                        Section::make("")->schema([
-                            KeyValue::make(__("properties")),
-                            FileUpload::make(__("image")),
-                        ])
-                    ])->columns(2),
+                    ]),
                     Tabs\Tab::make(__('Content'))->schema([
                         Section::make(__("Write This Content If you want make page for this"))->schema([
                             Builder::make(__('content'))
                                 ->blocks([
-                                    Builder\Block::make('heading')
+                                    Builder\Block::make('heading')->label(__('heading'))
                                         ->schema([
                                             TextInput::make('content')
                                                 ->label('Heading')
@@ -71,13 +119,13 @@ class LevelResource extends Resource
                                                 ->required(),
                                         ])
                                         ->columns(2),
-                                    Builder\Block::make('paragraph')
+                                    Builder\Block::make('paragraph')->label(__('paragraph'))
                                         ->schema([
                                             Textarea::make('content')
                                                 ->label('Paragraph')
                                                 ->required(),
                                         ]),
-                                    Builder\Block::make('image')
+                                    Builder\Block::make('image')->label(__('image'))
                                         ->schema([
                                             FileUpload::make('url')
                                                 ->label('Image')
@@ -87,12 +135,12 @@ class LevelResource extends Resource
                                                 ->label('Alt text')
                                                 ->required(),
                                         ]),
-                                    Builder\Block::make('richfield')
+                                    Builder\Block::make('richfield')->label(__('richfield'))
                                         ->schema([
                                             RichEditor::make('content')
                                                 ->required(),
                                         ]),
-                                    Builder\Block::make('markdown')
+                                    Builder\Block::make('markdown')->label(__('markdown'))
                                         ->schema([
                                             MarkdownEditor::make('content')
                                                 ->required(),
@@ -100,7 +148,7 @@ class LevelResource extends Resource
                                 ])
                                 ->columnSpanFull(),
                         ])
-                    ]),
+                    ])->hiddenOn(LevelsRelationManager::class),
                 ])
 
             ])->columns(1);
@@ -110,21 +158,29 @@ class LevelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('department_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('count_of_student')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\IconColumn::make('visible')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
+                ImageColumn::make('image')->label(__("image")),
+                TextColumn::make('name')->searchable()->label(__("name"))->sortable()
+                    ->toggleable(),
+                TextColumn::make("slug")->label(__("slug"))->sortable()
+                    ->toggleable(),
+                TextColumn::make('departments_sum_count_of_student')
+                    ->searchable()
+                    ->label(__("count of students"))
                     ->sortable()
+                    ->sum("departments", "count_of_student")
+                    ->toggleable(),
+                TextColumn::make('subjects_count')->label(__("Subjects"))->counts('subjects')->sortable()
+                    ->toggleable(),
+                TextColumn::make('doctors_count')->label(__("Doctors"))->counts('doctors')->sortable()
+                    ->toggleable(),
+                TextColumn::make('description')->searchable()->label(__("description"))->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
+                IconColumn::make('visible')->boolean()->label(__("visible"))->sortable()
+                    ->toggleable(),
+
+                TextColumn::make("created_at")->label(__("created at"))->sortable()->datetime()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make("updated_at")->label(__("updated at"))->sortable()->datetime()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
@@ -144,7 +200,8 @@ class LevelResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            SubjectsRelationManager::class,
+            DoctorsRelationManager::class,
         ];
     }
 

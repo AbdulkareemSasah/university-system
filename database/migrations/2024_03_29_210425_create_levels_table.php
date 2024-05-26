@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('levels', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Department::class)->index();
             $table->json("name");
-            $table->json("slug");
-            $table->mediumInteger("count_of_student");
-            $table->json("description");
-            $table->json("properties");
-            $table->json("image");
-            $table->json("content");
-            $table->boolean("visible");
+            $table->json("slug")->nullable();
+            $table->json("description")->nullable();
+            $table->json("properties")->nullable();
+            $table->string("image")->nullable();
+            $table->json("content")->nullable();
+            $table->boolean("visible")->default(false);
             $table->timestamps();
         });
     }

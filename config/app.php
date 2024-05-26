@@ -78,11 +78,15 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'ar'),
+    'available_locales' => [
+        'Arabic' => 'ar',
+        'English' => 'en',
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    ],
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'ar'),
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'faker_locale' => env('APP_FAKER_LOCALE', 'ar_SA'),
 
     /*
     |--------------------------------------------------------------------------
@@ -122,8 +126,10 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
-//    "providers" => [
-////        Spatie\Permission\PermissionServiceProvider::class,
-//    ]
+    'aliases' => \Illuminate\Support\Facades\Facade::defaultAliases()->merge([
+    'PDF' => Elibyy\TCPDF\Facades\TCPDF::class
+])->toArray(),
+
+
 
 ];

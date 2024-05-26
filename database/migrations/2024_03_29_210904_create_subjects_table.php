@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
             $table->json("name");
-            $table->json("slug");
-            $table->json("description");
-            $table->json("image");
-            $table->json("properties");
-            $table->json("content");
-            $table->boolean("visible");
+            $table->json("slug")->nullable();
+            $table->json("description")->nullable();
+            $table->string("image")->nullable();
+            $table->json("properties")->nullable();
+            $table->json("content")->nullable();
+            $table->boolean("visible")->default(false);
+            $table->boolean("has_practical")->default(false);
             $table->timestamps();
         });
     }

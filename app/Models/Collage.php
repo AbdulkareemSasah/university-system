@@ -20,9 +20,20 @@ class Collage extends Model
         "properties",
         "visible"
     ];
-    public function sections()
+    // public function getRouteKeyName(): string
+    // {
+    //     return 'slug';
+    // }
+    protected $casts = [
+        'properties' => 'array',
+    ];
+    public function departments()
     {
-        return $this->belongsToMany(Department::class);
+        return $this->hasMany(Department::class);
     }
-}
+    public function tables()
+    {
+        return $this->hasMany(Table::class);
+    }
 
+}

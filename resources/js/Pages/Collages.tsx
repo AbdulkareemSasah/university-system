@@ -10,14 +10,16 @@ type Props = {
         image: string;
         slug: string;
     }[];
+    is_user:boolean,
+    is_doctor:boolean
 };
 
-export default function Collages({ collages }: PageProps<Props>) {
+export default function Collages({ collages ,  is_doctor,is_user}: PageProps<Props>) {
     return (
-        <Layout>
+        <Layout is_doctor={is_doctor} is_user={is_user}>
             <div className="grid lg:grid-cols-3 md:grid-cols-2 w-full lg:w-fit mx-auto justify-center items-center min-h-screen gap-5 ">
                 {collages.map(({ id, name, image, slug }) => (
-                    <CollageCard title={name} img={image} slug={slug} id={id} />
+                    <CollageCard key={id} title={name} img={image} slug={slug} id={id} />
                 ))}
             </div>
         </Layout>

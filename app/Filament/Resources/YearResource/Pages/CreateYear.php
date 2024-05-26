@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateYear extends CreateRecord
 {
     protected static string $resource = YearResource::class;
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
 }

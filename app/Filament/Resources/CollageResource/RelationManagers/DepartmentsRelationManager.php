@@ -14,6 +14,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\Concerns\Translatable;
 
@@ -21,22 +22,23 @@ class DepartmentsRelationManager extends RelationManager
 {
     use Translatable;
     protected static string $relationship = 'departments';
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __("Departments");
+    }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make(__("Create Class Room"))->schema([
+                Section::make(__("Create New Department"))->schema([
                     TextInput::make("name")->label(__("name")),
                     TextInput::make("slug")->label(__("slug")),
                     Textarea::make("description")->label(__("description")),
                     Checkbox::make("visible")->label(__("visible")),
-
                 ]),
                 Section::make("")->schema([
-                    KeyValue::make("properties")->label(__("properties")),
                     FileUpload::make("image")->label(__("image")),
-                    TextInput::make("content")->hidden(),
                 ])
             ]);
     }
@@ -46,23 +48,28 @@ class DepartmentsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\ImageColumn::make('image')->label(__("image")),
+                Tables\Columns\TextColumn::make('name')->label(__("name")),
+                Tables\Columns\TextColumn::make('slug')->label(__("slug")),
+                Tables\Columns\IconColumn::make('visible')->label(__("visible"))->boolean(),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Tables\Actions\LocaleSwitcher::make(),
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->label(__("Create Department")),
+                Tables\Actions\AttachAction::make(),
             ])
             ->actions([
-                Tables\Actions\LocaleSwitcher::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DetachBulkAction::make(),
                 ]),
             ]);
     }

@@ -6,6 +6,7 @@ use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugi
 use App\Filament\Pages\Tenancy\EditTeamProfile;
 use App\Filament\Pages\Tenancy\RegisterTeam;
 use App\Models\Team;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -23,6 +24,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+
 class DashboardPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -31,7 +33,6 @@ class DashboardPanelProvider extends PanelProvider
             ->default()
             ->id('dashboard')
             ->path('dashboard')
-            ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -61,6 +62,10 @@ class DashboardPanelProvider extends PanelProvider
                     ->defaultLocales(["ar", "en"])
                 // ->defaultLocales(Language::pluck('language')->toArray())
             )
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make());
+            ->plugins(
+                [
+                    FilamentSpatieRolesPermissionsPlugin::make(),
+                ]
+            );
     }
 }

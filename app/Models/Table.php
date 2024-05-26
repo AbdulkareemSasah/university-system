@@ -10,9 +10,32 @@ class Table extends Model
 {
     use HasFactory;
     use HasTranslations;
-    public $translatable = ["name", "slug", "description", "content"];
+    public $translatable = ["data"];
     protected $fillable = [
-        "department_id",
-        ""
+        "collage_id",
+        "year_id",
+        "term_id",
+        "properties",
+        "data"
     ];
+    protected $casts = [
+        'properties' => 'array',
+    ];
+
+    public function collage()
+    {
+        return $this->belongsTo(Collage::class);
+    }
+    public function year()
+    {
+        return $this->belongsTo(Year::class);
+    }
+    public function term()
+    {
+        return $this->belongsTo(Term::class);
+    }
+    public function lectures()
+    {
+        return $this->hasMany(Lecture::class);
+    }
 }

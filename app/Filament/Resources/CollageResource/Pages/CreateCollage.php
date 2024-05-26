@@ -8,6 +8,7 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateCollage extends CreateRecord
 {
+
     use CreateRecord\Concerns\Translatable;
     protected static string $resource = CollageResource::class;
     protected function getHeaderActions(): array

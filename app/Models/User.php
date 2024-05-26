@@ -20,7 +20,8 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable;
     use HasRoles;
-
+    protected $guarded = "web";
+    protected $guard = "web";
     /**
      * The attributes that are mass assignable.
      *
@@ -54,20 +55,6 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
         ];
     }
-
-
-
-    public function subjects(): BelongsToMany
-    {
-        return $this->belongsToMany(Subject::class);
-    }
-    public function levels(): BelongsToMany
-    {
-        return $this->belongsToMany(Level::class);
-    }
-
-
-
     public function canAccessPanel(Panel $panel): bool
     {
         return true;

@@ -7,8 +7,7 @@ import {
     CardTitle,
 } from "./ui/card";
 import { Link } from "@inertiajs/react";
-import { useRoute } from "../../../vendor/tightenco/ziggy/src/js";
-
+import {useRoute} from "ziggy-js";
 type Props = {
     id: number;
     title: string;
@@ -19,7 +18,7 @@ type Props = {
 export default function CollageCard({ id, title, img, slug }: Props) {
     const route = useRoute();
     return (
-        <Link href={route("departments", { collage: id })}>
+        <Link href={route("schedule", { collage: id })}>
             <Card className="w-full lg:max-w-md">
                 <CardContent className="content-center flex items-center justify-center">
                     <img src={`/storage/${img}`} className="h-64" />

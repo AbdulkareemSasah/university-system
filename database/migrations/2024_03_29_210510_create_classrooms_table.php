@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('class_rooms', function (Blueprint $table) {
             $table->id();
             $table->json("name");
-            $table->json("slug");
+            $table->json("slug")->nullable();
             $table->mediumInteger("capacity");
-            $table->json("properties");
-            $table->json("description");
-            $table->json("image");
-            $table->json("content");
-            $table->boolean("visible");
+            $table->json("properties")->nullable();
+            $table->json("description")->nullable();
+            $table->string("image")->nullable();
+            $table->json("content")->nullable();
+            $table->enum("type", ["practical", "theoretical"])->default("theoretical");
+            $table->boolean("visible")->default(false);
+            $table->boolean("has_projector")->default(false);
             $table->timestamps();
         });
     }

@@ -7,14 +7,17 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 class Doctor  extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable;
-    use HasRoles;
+    use HasFactory, Notifiable, HasRoles;
+
+    protected $guarded = "doctor";
+    protected $guard = "doctor";
     /**
      * The attributes that are mass assignable.
      *
@@ -25,7 +28,8 @@ class Doctor  extends Authenticatable implements FilamentUser
         'email',
         'password',
         "avatar",
-        "degree"
+        "degree",
+        "days_available"
     ];
 
     /**
@@ -48,6 +52,7 @@ class Doctor  extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            "days_available" => "array"
         ];
     }
 
@@ -55,6 +60,10 @@ class Doctor  extends Authenticatable implements FilamentUser
     public function subjects(): BelongsToMany
     {
         return $this->belongsToMany(Subject::class, "lectures");
+    }
+    public function lectures(): HasMany
+    {
+        return $this->hasMany(Lecture::class);
     }
     public function levels(): BelongsToMany
     {
@@ -65,7 +74,7 @@ class Doctor  extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        if ($panel->getId() === 'doctor') {
+        if ($panel->getId() == 'doctor') {
             return true;
         }
         return false;

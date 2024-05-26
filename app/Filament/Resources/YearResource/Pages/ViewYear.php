@@ -10,6 +10,10 @@ class ViewYear extends ViewRecord
 {
     protected static string $resource = YearResource::class;
 
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
     protected function getHeaderActions(): array
     {
         return [

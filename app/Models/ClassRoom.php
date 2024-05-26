@@ -11,8 +11,13 @@ class ClassRoom extends Model
     use HasTranslations;
 
     use HasFactory;
-    public $translatable = ["name", "slug", "description", "content", "visible"];
+    public $translatable = ["name", "slug", "description", "content"];
+    protected $casts = [
+        'properties' => 'array',
+    ];
     protected $fillable = [
+        "type",
+        "has_projector",
         "name",
         "slug",
         "description",
@@ -22,4 +27,9 @@ class ClassRoom extends Model
         "properties",
         "visible"
     ];
+
+    public function lectures()
+    {
+        return $this->hasMany(Lecture::class);
+    }
 }

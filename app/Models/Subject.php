@@ -18,14 +18,23 @@ class Subject extends Model
         "image",
         "content",
         "visible",
-        "properties"
+        "properties",
+        "has_practical"
+    ];
+    protected $casts = [
+        'properties' => 'array',
     ];
     public function levels()
     {
-        return $this->belongsToMany(Level::class);
+        return $this->belongsToMany(Level::class, "lectures");
     }
     public function doctors()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(Doctor::class, "lectures");
+    }
+
+    public function lectures()
+    {
+        return $this->hasMany(Lecture::class);
     }
 }

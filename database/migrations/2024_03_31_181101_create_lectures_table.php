@@ -13,11 +13,18 @@ return new class extends Migration
     {
         Schema::create('lectures', function (Blueprint $table) {
             $table->id();
-            $table->json("properties");
-            $table->json("content");
-            $table->boolean("visible");
-            $table->foreignIdFor(\App\Models\SubjectLevelDoctor::class)->index();
+            $table->json("properties")->nullable();
+            $table->json("content")->nullable();
+            $table->boolean("visible")->default(false);
+            $table->boolean("type")->default(false);
+            $table->time("start");
+            $table->time("end");
+            $table->enum("day", [1, 2, 3, 4, 5, 6, 7])->default(1);
+            $table->foreignIdFor(\App\Models\Doctor::class)->index();
+            $table->foreignIdFor(\App\Models\Subject::class)->index();
+            $table->foreignIdFor(\App\Models\Level::class)->index();
             $table->foreignIdFor(\App\Models\Table::class)->index();
+            $table->foreignIdFor(\App\Models\ClassRoom::class)->index();
             $table->timestamps();
         });
     }

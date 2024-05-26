@@ -1,3 +1,4 @@
-<div>
-    hello world
+<div dir="rtl">
+
+    {{ $this->table }}
 </div>

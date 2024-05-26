@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -10,7 +10,7 @@ import {
     NavigationMenuViewport,
     navigationMenuTriggerStyle,
 } from "@/Components/ui/navigation-menu";
-import { Link } from "@inertiajs/react";
+import {Link, router, usePage} from "@inertiajs/react";
 import { Button } from "./ui/button";
 import { GridIcon } from "@radix-ui/react-icons";
 import {
@@ -22,11 +22,17 @@ import {
     SheetDescription,
 } from "./ui/sheet";
 import ModeToggle from "./ModeToggle";
-type Props = {};
+import Logout from "@/Components/Logout";
+type Props = {
+    is_user:boolean,
+    is_doctor:boolean
+};
 
-export default function Navbar({}: Props) {
+export default function Navbar({is_user,is_doctor}: Props) {
+
+
     return (
-        <nav className="w-full z-50 fixed top-0 left-0 flex justify-between items-center h-16 px-3 backdrop-blur-lg">
+        <nav className="w-full z-50 fixed top-0 bg-gray-200 left-0 flex justify-between items-center h-16 px-3 backdrop-blur-lg">
             <div className="md:hidden">
                 <Sheet>
                     <SheetTrigger>
@@ -52,12 +58,12 @@ export default function Navbar({}: Props) {
             <div className="">
                 <div className="text-2xl">جامعة تبوك</div>
             </div>
-            <NavigationMenu className="hidden md:block">
-                <NavigationMenuList>
-                    <NavigationMenuItem>
+            <NavigationMenu className="hidden md:block ">
+                <NavigationMenuList className={"flex-row-reverse"}>
+                    <NavigationMenuItem >
                         <Link href="/">
                             <NavigationMenuLink
-                                className={navigationMenuTriggerStyle()}
+                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
                             >
                                 الرئيسية
                             </NavigationMenuLink>
@@ -66,17 +72,56 @@ export default function Navbar({}: Props) {
                     <NavigationMenuItem>
                         <Link href="/collages">
                             <NavigationMenuLink
-                                className={navigationMenuTriggerStyle()}
+                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
                             >
-                                الجدول الدراسي
+                                الجداول الدراسية
+                            </NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+ <NavigationMenuItem>
+                        <Link href="/collages">
+                            <NavigationMenuLink
+                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
+                            >
+                                التخصصات
+                            </NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+ <NavigationMenuItem>
+                        <Link href="/collages">
+                            <NavigationMenuLink
+                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
+                            >
+                                عن الجامعة
+                            </NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+ <NavigationMenuItem>
+                        <Link href="/collages">
+                            <NavigationMenuLink
+                                className={navigationMenuTriggerStyle()+" bg-gray-200"}
+                            >
+                                بوابة الطالب
                             </NavigationMenuLink>
                         </Link>
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
+
             <div className="flex gap-4">
                 <ModeToggle />
-                <Button>تسجيل الدخول</Button>
+                {is_doctor  ?
+                    <>
+                        <Logout />
+                        <a href={"/lectures"}><Button>محاضراتي</Button></a>
+                    </> :
+                    is_user ?
+                        <>
+                            <Logout />
+                            <Link href={"/dashboard"}><Button>لوحة التحكم</Button></Link>
+                        </> :
+                        <Link href={"/login"}><Button>تسجيل الدخول</Button></Link>
+                }
             </div>
         </nav>
     );

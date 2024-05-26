@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TableResource\Pages;
 use App\Filament\Resources\TableResource\RelationManagers;
+use App\Filament\Resources\TableResource\RelationManagers\LecturesRelationManager;
 use App\Models\Table;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -18,22 +19,34 @@ class TableResource extends Resource
 {
     use Translatable;
     protected static ?string $model = Table::class;
-
+    protected static ?int $navigationSort = 8;
+    public static function getModelLabel(): string
+    {
+        return __("Table");
+    }
+    public static function getPluralModelLabel(): string
+    {
+        return __('Tables');
+    }
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('department_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Textarea::make('data')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Textarea::make('properties')
-                    ->required()
-                    ->columnSpanFull(),
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\Select::make('year_id')->label(__("Year"))
+                        ->required()
+                        ->relationShip("year", "name"),
+                    Forms\Components\Select::make('term_id')->label(__("Term"))
+                        ->required()
+                        ->relationShip("term", "name"),
+                    Forms\Components\Select::make('collage_id')->label(__("Collage"))
+                        ->required()
+                        ->relationShip("collage", "name"),
+                    Forms\Components\KeyValue::make('properties')->label(__("properties"))
+                        ->columnSpanFull(),
+                ])->columns(2)
             ]);
     }
 
@@ -41,14 +54,17 @@ class TableResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('department_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('year.name')->label(__("Year"))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('term.name')->label(__("Term"))
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('collage.name')->label(__("Collage"))
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->label(__("Created At"))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                Tables\Columns\TextColumn::make('updated_at')->label(__("Updated At"))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -66,11 +82,15 @@ class TableResource extends Resource
                 ]),
             ]);
     }
-
+    public static function getTableQuery()
+    {
+        return parent::getTableQuery()
+            ->loadMissing(['lectures.subjectLevelDoctor.subject', 'lectures.subjectLevelDoctor.doctor']);
+    }
     public static function getRelations(): array
     {
         return [
-            //
+            LecturesRelationManager::class,
         ];
     }
 
@@ -81,6 +101,7 @@ class TableResource extends Resource
             'create' => Pages\CreateTable::route('/create'),
             'view' => Pages\ViewTable::route('/{record}'),
             'edit' => Pages\EditTable::route('/{record}/edit'),
+            'schedule' => Pages\LectureScheduleTable::route('/{record}/schedule')
         ];
     }
 }
